@@ -269,9 +269,7 @@
     // Pointer & touch events are normalized into
     // the `pointer*` events for handling different events
     app.stage
-      .on('pointerdown', onPointerDown)
-      .on('pointerup', onPointerUp)
-      .on('pointerupoutside', onPointerUp)
+
       .on('pointermove', onPointerMove)
   }
 
@@ -289,15 +287,17 @@
   }
 
   // On pointer move, calculate coordinates diff
-  function onPointerMove (e) {
-    const { x, y } = e.data.global
-    if (pointerDownTarget) {
-      diffX = pointerDiffStart.x + (x - pointerStart.x)
-      diffY = pointerDiffStart.y + (y - pointerStart.y)
-      diffX = diffX > 0 ? Math.min(diffX, centerX + imagePadding) : Math.max(diffX, -(centerX + widthRest))
-      diffY = diffY > 0 ? Math.min(diffY, centerY + imagePadding) : Math.max(diffY, -(centerY + heightRest))
-    }
-  }
+ function onPointerMove(e) {
+  onPointerDown(e);
+    const { x, y } = e.data.global;
+
+    diffX = x - window.innerWidth / 2;  // This will center the effect around the middle of the screen
+    diffY = y - window.innerHeight / 2;
+
+    diffX = diffX > 0 ? Math.min(diffX, centerX + imagePadding) : Math.max(diffX, -(centerX + widthRest));
+    diffY = diffY > 0 ? Math.min(diffY, centerY + imagePadding) : Math.max(diffY, -(centerY + heightRest));
+}
+
 
   // Init everything
   function init () {
