@@ -1,27 +1,24 @@
 <script lang="ts">
-import * as Dialog from "$lib/components/ui/dialog";
+
 import {Button} from "$lib/components/ui/button";
 import Confetti from "svelte-confetti";
 	import * as Card  from "$lib/components/ui/card";
+	import { fade } from "svelte/transition";
+
 
   let count = 0;
   let posX = 0;
   let posY = 0;
-let showConfetti = false;
+let showConfetti = true;
 let isMoving=false;
-  const buttonTexts = [
-    {title:"Привет ЮЛЬЧИК!!!!!!",buttonText:"Привет Даша........ о_О"},
-    {title:"Как дела?",buttonText:"Ну нормально."},
-    {title:"А у меня для тебя СЮРПРИЗ!",buttonText:"Надеюсь на меня сейчас ничего не выскачит...."},
-    {title:"Ты Готова?",buttonText:"Ну давай. Я отодвинулась от экрана"},
-    {title:"Точно готова??",buttonText:"Мне что, надо крикнуть как в спанч бобе - ДА КАПИТАН??"},
+const buttonTexts = [
+    {title:"Привет, Юльчик!",buttonText:"Привет, Даша... о_О"},
+    {title:"Как дела??",buttonText:"Ну, нормально..."},
+    {title:"У меня для тебя есть СЮРПРИЗ!",buttonText:"Надеюсь, на меня сейчас ничего не выскочит..."},
+    {title:"Ты Готова?",buttonText:"Ну, давай. Я отодвинулась от экрана"},
+    {title:"Точно готова??",buttonText:"Мне надо крикнуть как в Спанч Бобе: 'Да, Капитан!' ? :)"},
 
   ];
-// Utility function to get a random number between min and max.
-function getRandomBetween(min: number, max: number): number {
-    return Math.random() * (max - min) + min;
-}
-
 
 let original = {x:0,y:0};
 function moveAway(event: MouseEvent ) {
@@ -83,68 +80,45 @@ function moveAway(event: MouseEvent ) {
     }, 300);
 }
 
-
-
 </script>
 
 {#if showConfetti}
-  <div style="
-  z-index: 1000;
-        position: fixed;
-        top: -50px;
-        left: 0;
-        height: 100vh;
-        width: 100vw;
-        display: flex;
-        justify-content: center;
-        overflow: hidden;
-        pointer-events: none;">
-        <Confetti x={[-5, 5]} y={[0, 0.1]} delay={[500, 2000]} infinite duration={5000} amount={100} fallDistance="100vh" />
-   
-        </div>
+  <div style="z-index: 1000; position: fixed; top: -50px; left: 0; height: 100vh; width: 100vw; display: flex; justify-content: center; overflow: hidden; pointer-events: none;">
+    <Confetti x={[-5, 5]} y={[0, 0.1]} delay={[500, 2000]} infinite duration={5000} amount={500} fallDistance="100vh" />
+  </div>
+  
+  <!-- Removed the 'opacity-0 scale-95' since you want it to appear immediately when 'showConfetti' is true -->
+
 {/if}
-
-
-<Card.Root class="w-[480px]" style={`transform: translate(${posX}px, ${posY}px); transition: transform 0.3s;`}>
+  <div class={" flex flex-col font-bold text-center text-white drop-shadow-md transition-all duration-1000 ease-in transform dynamic-text-size "+ (showConfetti ? "scale-100 opacity-100 ":"hidden scale-0 opacity-0")}>
+    <span>Ты станешь Тётей !!!</span>
+    <span> 🤯🤪😅</span>
+  </div>
+    
+{#if showConfetti===false}
+<Card.Root class="w-fit" style={`transform: translate(${posX}px, ${posY}px); transition: transform 0.3s;`}>
   <Card.Header>
-    <Card.Title>{buttonTexts[count].title}</Card.Title>
+    <Card.Title class="text-4xl">{buttonTexts[count].title}</Card.Title>
     
   </Card.Header>
 
     <Card.Footer>
         {#if count<4}
 
-        <Button class="w-full" on:click={(e)=>{moveAway(e)}}>
+        <Button class="w-full" on:click={(e)=>{moveAway(e)}} size="lg">
        {buttonTexts[count].buttonText}
         </Button>
 
         {/if}
-        {#if count===4}
-          <Dialog.Root>
-        <div class=""  role="button" tabindex="0"  >
-          <Dialog.Trigger> 
-            
-            <Button  on:click={() => showConfetti = true} >{buttonTexts[count].buttonText}</Button>
-            </Dialog.Trigger>
-        </div>
-      
-        <Dialog.Content>
-            
-            <Dialog.Header>
-            <Dialog.Title>Are you sure absolutely sure?</Dialog.Title>
-            <Dialog.Description>
-                
-                This action cannot be undone. This will permanently delete your account
-                and remove your data from our servers.
-            </Dialog.Description>
-            </Dialog.Header>
-        </Dialog.Content>
-        </Dialog.Root>
+        {#if count===4 }
+
+            <Button  on:click={() => showConfetti = true}  size="lg">{buttonTexts[count].buttonText}</Button>
+        
         {/if}
 
     </Card.Footer>
 </Card.Root>
 
 
-
+{/if}
 

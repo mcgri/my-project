@@ -4,10 +4,8 @@
 </script>
 
 <div class="h-screen w-screen relative">
-<div class="absolute z-0">
-  <GridMasonry /> 
-</div>
-<div class="absolute z-10 flex items-center justify-center w-full h-full">
+
+<div class="flex items-center justify-center w-full h-full">
 <slot />
 </div>
 

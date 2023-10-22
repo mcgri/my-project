@@ -305,8 +305,8 @@ function onPointerMove(e) {
     // If the mouse has moved significantly, process the move
     if (hasMovedSignificantly(x, y)) {
         onPointerDown(e);
-        diffX = x - window.innerWidth / 2;
-        diffY = y - window.innerHeight / 2;
+        diffX = x - window.innerWidth / 4;
+        diffY = y - window.innerHeight / 4;
 
         diffX = diffX > 0 ? Math.min(diffX, centerX + imagePadding) : Math.max(diffX, -(centerX + widthRest));
         diffY = diffY > 0 ? Math.min(diffY, centerY + imagePadding) : Math.max(diffY, -(centerY + heightRest));
