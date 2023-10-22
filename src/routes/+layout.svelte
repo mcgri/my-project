@@ -7,7 +7,7 @@
 <div class="absolute z-0">
   <GridMasonry /> 
 </div>
-<div class="absolute z-10">
+<div class="absolute z-10 flex items-center justify-center w-full h-full">
 <slot />
 </div>
 

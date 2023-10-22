@@ -9,36 +9,34 @@
 	</head>
 	<body data-sveltekit-preload-data="hover">
 		<script id="backgroundFragment" type="x-shader/x-fragment">
-			// Adapted from: https://www.shadertoy.com/view/MdlGRr
+					// Adapted from: https://www.shadertoy.com/view/MdlGRr
 
-			// It is required to set the float precision for fragment shaders in OpenGL ES
-			// More info here: https://stackoverflow.com/a/28540641/4908989
 			#ifdef GL_ES
 			precision mediump float;
 			#endif
 
 			uniform vec2 uPointerDiff;
+			uniform vec2 uResolution; // Define the resolution uniform
 
-			// This function returns 1 if `coord` correspond to a grid line, 0 otherwise
-			float isGridLine (vec2 coord) {
-			  vec2 pixelsPerGrid = vec2(50.0, 50.0);
-			  vec2 gridCoords = fract(coord / pixelsPerGrid);
-			  vec2 gridPixelCoords = gridCoords * pixelsPerGrid;
-			  vec2 gridLine = step(gridPixelCoords, vec2(1.0));
-			  float isGridLine = max(gridLine.x, gridLine.y);
-			  return isGridLine;
-			}
+			void main() {
+			    vec2 coord = gl_FragCoord.xy - uPointerDiff + vec2(10.0);
 
-			// Main function
-			void main () {
-			  // Coordinates minus the `uPointerDiff` value, and plus an offset
-			  vec2 coord = gl_FragCoord.xy - uPointerDiff + vec2(10.0);
-			  // Set `color` to black
-			  vec3 color = vec3(0.0);
-			  // If it is a grid line, change blue channel to 0.3
-			  color.b = isGridLine(coord) * 0.3;
-			  // Assing the final rgba color to `gl_FragColor`
-			  gl_FragColor = vec4(color, 1.0);
+			    // Calculate the gradient color based on the vertical position
+			    float gradient = coord.y / uResolution.y; // Use uResolution here
+
+			    // Define the gradient colors
+			    vec3 color1 = vec3(0.776, 1.0, 0.866); // #c6ffdd
+			    vec3 color2 = vec3(0.984, 0.843, 0.525); // #fbd786
+			    vec3 color3 = vec3(0.968, 0.474, 0.490); // #f7797d
+
+			    // Interpolate between the gradient colors
+			    vec3 finalColor = mix(color1, color2, smoothstep(0.0, 1.0, gradient));
+			    finalColor = mix(finalColor, color3, smoothstep(0.0, 1.0, gradient));
+
+			    // Alpha will be 1.0 for the entire background
+			    float alpha = 1.0;
+
+			    gl_FragColor = vec4(finalColor, alpha);
 			}
 		</script>
 

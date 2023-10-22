@@ -190,7 +190,7 @@
     // Create a new Graphics element to draw solid rectangles
     const graphics = new PIXI.Graphics()
     // Select the color for rectangles
-    graphics.beginFill(0x000000)
+    // graphics.beginFill(0x000000)
     // Loop over each rect in the list
     rects.forEach(rect => {
       // Create a new Sprite element for each image
@@ -273,30 +273,62 @@
       .on('pointermove', onPointerMove)
   }
 
-  // On pointer down, save coordinates and set pointerDownTarget
-  function onPointerDown (e) {
-    const { x, y } = e.data.global
-    pointerDownTarget = 1
-    pointerStart.set(x, y)
-    pointerDiffStart = uniforms.uPointerDiff.clone()
-  }
+let lastX, lastY;
+let moveTimeout;
 
-  // On pointer up, set pointerDownTarget
-  function onPointerUp () {
-    pointerDownTarget = 0
-  }
+// On pointer down, save coordinates and set pointerDownTarget
+function onPointerDown(e) {
+    const { x, y } = e.data.global;
+    pointerDownTarget = 1;
+    pointerStart.set(x, y);
+    pointerDiffStart = uniforms.uPointerDiff.clone();
 
-  // On pointer move, calculate coordinates diff
- function onPointerMove(e) {
-  onPointerDown(e);
+    // Set the initial lastX and lastY on pointer down
+    lastX = x;
+    lastY = y;
+}
+
+// On pointer up, set pointerDownTarget
+function onPointerUp() {
+    pointerDownTarget = 0;
+}
+
+// Check if the mouse has moved more than a given threshold
+function hasMovedSignificantly(x, y, threshold = 5) {
+    return true;
+}
+
+// On pointer move, calculate coordinates diff
+function onPointerMove(e) {
     const { x, y } = e.data.global;
 
-    diffX = x - window.innerWidth / 2;  // This will center the effect around the middle of the screen
-    diffY = y - window.innerHeight / 2;
+    // If the mouse has moved significantly, process the move
+    if (hasMovedSignificantly(x, y)) {
+        onPointerDown(e);
+        diffX = x - window.innerWidth / 2;
+        diffY = y - window.innerHeight / 2;
 
-    diffX = diffX > 0 ? Math.min(diffX, centerX + imagePadding) : Math.max(diffX, -(centerX + widthRest));
-    diffY = diffY > 0 ? Math.min(diffY, centerY + imagePadding) : Math.max(diffY, -(centerY + heightRest));
+        diffX = diffX > 0 ? Math.min(diffX, centerX + imagePadding) : Math.max(diffX, -(centerX + widthRest));
+        diffY = diffY > 0 ? Math.min(diffY, centerY + imagePadding) : Math.max(diffY, -(centerY + heightRest));
+
+        // Update the lastX and lastY
+        lastX = x;
+        lastY = y;
+    }
+
+    // Clear any existing timeout
+    if (moveTimeout) {
+        clearTimeout(moveTimeout);
+    }
+
+    // Set a new timeout to check if the mouse hasn't moved significantly for 100ms
+    moveTimeout = setTimeout(() => {
+        
+            onPointerUp();
+       
+    }, 100);
 }
+
 
 
   // Init everything
@@ -367,19 +399,21 @@
     clean();
   });
 
-  // ... [Rest of the JavaScript code provided by you]
 
 
 
 </script>
 
 <style>
+  canvas {
+  background-color: transparent;
+}
   .view {
     height: 100vh;
     width: 100vw;
     margin: 0;
     overflow: hidden;
-    background-color: black;
+       background: linear-gradient(to bottom, rgb(170, 0, 255), #00ff7b); 
   }
 </style>
 

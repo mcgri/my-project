@@ -2,6 +2,7 @@
 import * as Dialog from "$lib/components/ui/dialog";
 import {Button} from "$lib/components/ui/button";
 import Confetti from "svelte-confetti";
+	import * as Card  from "$lib/components/ui/card";
 
   let count = 0;
   let posX = 0;
@@ -9,66 +10,78 @@ import Confetti from "svelte-confetti";
 let showConfetti = false;
 let isMoving=false;
   const buttonTexts = [
-    "First Move",
-    "Second Move",
-    "Third Move",
-    "Fourth Move",
-    "Fifth Move",
-    "Sixth Move",
-    "Last Move"
+    {title:"Привет ЮЛЬЧИК!!!!!!",buttonText:"Привет Даша........ о_О"},
+    {title:"Как дела?",buttonText:"Ну нормально."},
+    {title:"А у меня для тебя СЮРПРИЗ!",buttonText:"Надеюсь на меня сейчас ничего не выскачит...."},
+    {title:"Ты Готова?",buttonText:"Ну давай. Я отодвинулась от экрана"},
+    {title:"Точно готова??",buttonText:"Мне что, надо крикнуть как в спанч бобе - ДА КАПИТАН??"},
+
   ];
 // Utility function to get a random number between min and max.
 function getRandomBetween(min: number, max: number): number {
     return Math.random() * (max - min) + min;
 }
 
-function moveAway(event?: MouseEvent | FocusEvent) {
-    if (isMoving) return;
 
-    if (count >= 7) {
-        posX = 250;  // Reset to the center
-        posY = 250;  // Reset to the center
-       
+let original = {x:0,y:0};
+function moveAway(event: MouseEvent ) {
+
+
+  if (isMoving) return;
+
+    if (count >= 4) {
+        // Reset to the center after completing all movements
+        posX = 250;
+        posY = 250;
+      
         return;
     }
+
     isMoving = true;
 
-    const rect = (event?.currentTarget as HTMLElement).getBoundingClientRect();
+    let targetX, targetY;
+      const rect = (event?.currentTarget as HTMLElement).getBoundingClientRect();
 
-    let mouseY;
-
-    if (event instanceof MouseEvent) {
-        mouseY = event.clientY - rect.top;
-    } else {
-        // For a FocusEvent, use the center of the box as reference
-        mouseY = 250;
+    // Get the mouse coordinates relative to the element
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+    if(original.x===0 && original.y===0){
+      original.x=mouseX;
+      original.y=mouseY;
+    }
+    
+    switch (count) {
+        case 0: // Move to the very right
+            targetX =mouseX+100;
+            targetY = mouseY;
+            break;
+        case 1: // Move to the very left
+            targetX = mouseX-200;
+            targetY = mouseY;
+            break;
+        case 2: // Move to the top
+            targetX = mouseX;
+            targetY = mouseY+100;
+            break;
+        case 3: // Move to the bottom
+            targetX = mouseX;
+            targetY = mouseY-200;
+            break;
+        case 4: // Move back to the center
+            targetX =  original.x;
+            targetY = original.y;
+            break;
+        default:
+            break;
     }
 
-    if (count % 2 === 0) { // Even counts
-        // Move to a random position on the right half of the box (between 250px to 500px)
-        posX = getRandomBetween(250, 500);
-    } else { // Odd counts
-        // Move to a random position on the left half of the box (between 0px to 250px)
-        posX = getRandomBetween(0, 250);
-    }
-
-    if (mouseY < 250) {
-        // Mouse is on the top side, move button to the bottom
-        posY = 500;
-    } else {
-        // Mouse is on the bottom side, move button to the top
-        posY = 0;
-    }
-
+        posX = targetX;
+        posY = targetY;
     count += 1;
-
     setTimeout(() => {
         isMoving = false;
     }, 300);
 }
-
-
-
 
 
 
@@ -86,17 +99,32 @@ function moveAway(event?: MouseEvent | FocusEvent) {
         justify-content: center;
         overflow: hidden;
         pointer-events: none;">
-        <Confetti x={[-5, 5]} y={[0, 0.1]} delay={[500, 2000]} infinite duration={5000} amount={700} fallDistance="100vh" />
+        <Confetti x={[-5, 5]} y={[0, 0.1]} delay={[500, 2000]} infinite duration={5000} amount={100} fallDistance="100vh" />
    
         </div>
 {/if}
 
 
-    <Dialog.Root>
-        <div class="p-5 "  on:mouseover={moveAway} on:focus={moveAway} role="button" tabindex="0"  style={`transform: translate(${posX}px, ${posY}px); transition: transform 0.3s;`}>
+<Card.Root class="w-[480px]" style={`transform: translate(${posX}px, ${posY}px); transition: transform 0.3s;`}>
+  <Card.Header>
+    <Card.Title>{buttonTexts[count].title}</Card.Title>
+    
+  </Card.Header>
+
+    <Card.Footer>
+        {#if count<4}
+
+        <Button class="w-full" on:click={(e)=>{moveAway(e)}}>
+       {buttonTexts[count].buttonText}
+        </Button>
+
+        {/if}
+        {#if count===4}
+          <Dialog.Root>
+        <div class=""  role="button" tabindex="0"  >
           <Dialog.Trigger> 
             
-            <Button  on:click={() => showConfetti = true} >{count < 7 ? buttonTexts[count] : "Button"}</Button>
+            <Button  on:click={() => showConfetti = true} >{buttonTexts[count].buttonText}</Button>
             </Dialog.Trigger>
         </div>
       
@@ -112,4 +140,11 @@ function moveAway(event?: MouseEvent | FocusEvent) {
             </Dialog.Header>
         </Dialog.Content>
         </Dialog.Root>
+        {/if}
+
+    </Card.Footer>
+</Card.Root>
+
+
+
 
