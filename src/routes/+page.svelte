@@ -9,7 +9,7 @@ import Confetti from "svelte-confetti";
   let count = 0;
   let posX = 0;
   let posY = 0;
-let showConfetti = true;
+let showConfetti = false;
 let isMoving=false;
 const buttonTexts = [
     {title:"Привет, Юльчик!",buttonText:"Привет, Даша... о_О"},
@@ -53,16 +53,16 @@ function moveAway(event: MouseEvent ) {
             targetY = mouseY;
             break;
         case 1: // Move to the very left
-            targetX = mouseX-200;
+            targetX = mouseX-100;
             targetY = mouseY;
             break;
         case 2: // Move to the top
-            targetX = mouseX;
+            targetX = mouseX-100;
             targetY = mouseY+100;
             break;
         case 3: // Move to the bottom
-            targetX = mouseX;
-            targetY = mouseY-200;
+            targetX = mouseX-100;
+            targetY = mouseY-100;
             break;
         case 4: // Move back to the center
             targetX =  original.x;
