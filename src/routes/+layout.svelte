@@ -5,10 +5,8 @@
 
 <div class="h-screen w-screen relative">
 
-<div class=" items-center justify-center w-full h-full hidden md:flex">
+<div class=" items-center justify-center w-full h-full  flex ">
 <slot />
 </div>
-<div class="flex items-center justify-center w-full h-full md:hidden text-white text-lg drop-shadow">
-  На компьютере открой, пожалуйста
-</div>
+
 </div>

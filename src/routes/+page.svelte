@@ -24,56 +24,7 @@ let original = {x:0,y:0};
 function moveAway(event: MouseEvent ) {
 
 
-  if (isMoving) return;
-
-    if (count >= 4) {
-        // Reset to the center after completing all movements
-        posX = 250;
-        posY = 250;
-      
-        return;
-    }
-
-    isMoving = true;
-
-    let targetX, targetY;
-      const rect = (event?.currentTarget as HTMLElement).getBoundingClientRect();
-
-    // Get the mouse coordinates relative to the element
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
-    if(original.x===0 && original.y===0){
-      original.x=mouseX;
-      original.y=mouseY;
-    }
     
-    switch (count) {
-        case 0: // Move to the very right
-            targetX =mouseX+100;
-            targetY = mouseY;
-            break;
-        case 1: // Move to the very left
-            targetX = mouseX-100;
-            targetY = mouseY;
-            break;
-        case 2: // Move to the top
-            targetX = mouseX-100;
-            targetY = mouseY+100;
-            break;
-        case 3: // Move to the bottom
-            targetX = mouseX-100;
-            targetY = mouseY-100;
-            break;
-        case 4: // Move back to the center
-            targetX =  original.x;
-            targetY = original.y;
-            break;
-        default:
-            break;
-    }
-
-        posX = targetX;
-        posY = targetY;
     count += 1;
     setTimeout(() => {
         isMoving = false;
@@ -96,7 +47,7 @@ function moveAway(event: MouseEvent ) {
   </div>
     
 {#if showConfetti===false}
-<Card.Root class="w-fit" style={`transform: translate(${posX}px, ${posY}px); transition: transform 0.3s;`}>
+<Card.Root class="w-fit max-w-xs max-h-screen overflow-auto " style={`transform: translate(${posX}px, ${posY}px); transition: transform 0.3s;`}>
   <Card.Header>
     <Card.Title class="text-4xl">{buttonTexts[count].title}</Card.Title>
     
@@ -105,14 +56,14 @@ function moveAway(event: MouseEvent ) {
     <Card.Footer>
         {#if count<4}
 
-        <Button class="w-full" on:click={(e)=>{moveAway(e)}} size="lg">
-       {buttonTexts[count].buttonText}
+        <Button class=" flex flex-wrap whitespace-normal max-w-xs h-fit text-lg" on:click={(e)=>{moveAway(e)}} >
+     {buttonTexts[count].buttonText}
         </Button>
 
         {/if}
         {#if count===4 }
 
-            <Button  on:click={() => showConfetti = true}  size="lg">{buttonTexts[count].buttonText}</Button>
+            <Button  class=" flex flex-wrap whitespace-normal max-w-xs h-fit text-lg" on:click={() => showConfetti = true}  >{buttonTexts[count].buttonText}</Button>
         
         {/if}
 
